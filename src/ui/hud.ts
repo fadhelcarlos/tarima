@@ -81,6 +81,7 @@ export interface HudActions {
   insetsChanged(insets: { top: number; right: number; bottom: number; left: number }): void;
   project(piece: PieceId): { x: number; y: number } | null;
   hapticsSupported: boolean;
+  openInstruments(): void;
 }
 
 type Practice = { kind: 'groove'; lesson: Lesson } | { kind: 'song'; song: Song; step: number };
@@ -178,6 +179,7 @@ export class Hud {
     this.root.innerHTML = `
       <div class="hud-bar">
         <div class="hud-group">
+          <button type="button" class="inst-btn" id="inst-btn" aria-label="Cambiar de instrumento">${ICONS.drum}<span>Batería</span></button>
           <div class="seg" role="group" aria-label="Modo">
             <button type="button" data-mode="free" aria-pressed="true">Libre</button>
             <button type="button" data-mode="learn" aria-pressed="false">Aprender</button>
@@ -360,6 +362,10 @@ export class Hud {
     this.root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) =>
       b.addEventListener('click', () => this.setMode(b.dataset.mode as 'free' | 'learn')),
     );
+    this.$('#inst-btn').addEventListener('click', () => {
+      this.setMode('free');
+      this.act.openInstruments();
+    });
 
     const viewButtons = this.root.querySelectorAll<HTMLButtonElement>('[data-view]');
     let viewIdx = 0;

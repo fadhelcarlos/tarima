@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0d0b0a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Baqueta</title>
+    <title>Tarima</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Instrument+Sans:wght@400..600&display=swap" />
@@ -16,13 +16,15 @@
       <canvas id="scene" aria-label="Batería 3D"></canvas>
       <div id="labels" aria-hidden="true"></div>
       <div id="hud"></div>
+      <div id="mic-hud" hidden></div>
+      <div id="picker" hidden></div>
       <div id="loader">
         <div class="loader-card">
-          <h1 class="wordmark">Baqueta</h1>
-          <p class="tagline">Una batería acústica real para tocar con los dedos.</p>
+          <h1 class="wordmark">Tarima</h1>
+          <p class="tagline">Tu banda virtual: batería real y micrófono profesional, en tus manos.</p>
           <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
           <p class="step" id="loader-step">Preparando la sala</p>
-          <button id="start" class="primary" type="button" hidden>Tocar</button>
+          <button id="start" class="primary" type="button" hidden>Entrar</button>
         </div>
       </div>
     </div>

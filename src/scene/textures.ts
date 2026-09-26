@@ -271,7 +271,7 @@ export function coatedHead(label: string, seed = 1, displayFont = 'sans-serif'):
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = `600 ${S * 0.052}px ${displayFont}`;
-  ctx.fillText('Baqueta', 0, 0);
+  ctx.fillText('Tarima', 0, 0);
   ctx.font = `500 ${S * 0.02}px ${displayFont}`;
   ctx.fillStyle = 'rgba(38,36,34,0.7)';
   ctx.fillText(label, 0, S * 0.045);
@@ -306,7 +306,7 @@ export function kickResoHead(displayFont: string): { map: THREE.Texture; alphaMa
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#d9b36a';
   ctx.font = `700 ${S * 0.13}px ${displayFont}`;
-  ctx.fillText('Baqueta', S / 2, S * 0.47);
+  ctx.fillText('Tarima', S / 2, S * 0.47);
   ctx.strokeStyle = '#d9b36a';
   ctx.lineWidth = S * 0.006;
   ctx.beginPath();
@@ -434,7 +434,7 @@ export function cymbalColor(model: string, size: string, displayFont: string, se
   ctx.textBaseline = 'middle';
   ctx.fillStyle = 'rgba(22,16,10,0.85)';
   ctx.font = `700 ${S * 0.05}px ${displayFont}`;
-  ctx.fillText('Baqueta', 0, 0);
+  ctx.fillText('Tarima', 0, 0);
   ctx.font = `600 ${S * 0.026}px ${displayFont}`;
   ctx.fillText(`${size} ${model}`, 0, S * 0.045);
   ctx.font = `500 ${S * 0.016}px ${displayFont}`;

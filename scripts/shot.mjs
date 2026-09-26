@@ -23,6 +23,8 @@ await page.waitForSelector('#start:not([hidden])', { timeout: 120000 });
 if (args.loader) await page.screenshot({ path: `.cache/shots/${name}-loader.png` });
 if (!args.noenter) {
   await page.click('#start');
+  await page.waitForTimeout(300);
+  await page.click('[data-station="drums"]');
 }
 if (args.view) await page.evaluate((v) => window.app.rig.setView(v, true), args.view);
 await page.waitForTimeout(Number(args.wait || 1800));

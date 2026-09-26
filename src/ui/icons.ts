@@ -8,6 +8,8 @@ export const ICONS = {
   help: svg('<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.3 2.4c-.6.3-.9.8-.9 1.5v.4"/><path d="M12 16.8h.01"/>'),
   close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
   rotate: svg('<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M20 14a6 6 0 0 1-6 6M17.5 20.5L14 20l.8-3.4"/>'),
+  drum: svg('<ellipse cx="12" cy="8" rx="8" ry="3"/><path d="M4 8v7c0 1.7 3.6 3 8 3s8-1.3 8-3V8"/><path d="M7 10.6v6.3M17 10.6v6.3M12 11v7"/><path d="M14 3l6-2M10 3L4 1"/>'),
+  mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>'),
   back: svg('<path d="M14.5 5.5L8 12l6.5 6.5"/>'),
   minus: svg('<path d="M6 12h12"/>'),
   plus: svg('<path d="M12 6v12M6 12h12"/>'),

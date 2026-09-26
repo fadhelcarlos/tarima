@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mic lab</title></head>
+<body>
+<script type="module">
+import { VocalChain, PRESETS } from './src/mic/vocal.ts';
+const CAP = `class Cap extends AudioWorkletProcessor { constructor(){ super(); this.on=false; this.port.onmessage=(e)=>{this.on=e.data;}; }
+process(inp){ const c=inp[0]; if(this.on && c && c[0]) { const ch=c.length>1? [c[0].slice(), c[1].slice()] : [c[0].slice(), c[0].slice()]; this.port.postMessage(ch); } return true; } }
+registerProcessor('cap', Cap);`;
+window.run = async (presetId, seconds, extra) => {
+  const ctx = new AudioContext({ sampleRate: 48000 });
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([CAP], { type: 'application/javascript' })));
+  const cap = new AudioWorkletNode(ctx, 'cap', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2] });
+  const sink = ctx.createGain(); sink.gain.value = 0; cap.connect(sink).connect(ctx.destination);
+  const chain = new VocalChain(ctx, cap);
+  chain.apply({ ...PRESETS.find((p) => p.id === presetId).settings, key: 0, scale: 'mayor', ...(extra || {}) });
+  await chain.start(true);
+  await ctx.resume();
+  const L = [], R = [];
+  cap.port.onmessage = (e) => { L.push(e.data[0]); R.push(e.data[1]); };
+  cap.port.postMessage(true);
+  await new Promise((r) => setTimeout(r, seconds * 1000));
+  cap.port.postMessage(false);
+  chain.stop();
+  const n = L.reduce((a, b) => a + b.length, 0);
+  const out = new Float32Array(n * 2); let o = 0;
+  for (let i = 0; i < L.length; i++) { for (let k = 0; k < L[i].length; k++) { out[o++] = L[i][k]; out[o++] = R[i][k]; } }
+  const bytes = new Uint8Array(out.buffer); let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  await ctx.close();
+  return btoa(s);
+};
+window.ready = true;
+</script></body></html>

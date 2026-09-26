@@ -17,6 +17,8 @@ page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') 
 await page.goto(process.env.URL || 'http://localhost:5173/');
 await page.waitForSelector('#start:not([hidden])', { timeout: 180000 });
 await page.tap('#start');
+await page.waitForTimeout(300);
+await page.tap('[data-station="drums"]');
 await page.waitForTimeout(1400);
 for (const id of taps.split(',').filter(Boolean)) {
   const xy = await page.evaluate((id) => {

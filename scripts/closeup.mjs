@@ -5,6 +5,8 @@ const page = await ctx.newPage();
 await page.goto('http://localhost:5173/');
 await page.waitForSelector('#start:not([hidden])', { timeout: 180000 });
 await page.tap('#start');
+await page.waitForTimeout(300);
+await page.tap('[data-station="drums"]');
 await page.waitForTimeout(1300);
 const target = process.argv[2] || 'snare';
 await page.evaluate((id) => {

@@ -20,7 +20,7 @@ interface LoadedSample extends SampleEntry {
   offset: number;
 }
 
-export type Zone = 'hit' | 'center' | 'edge' | 'rim' | 'closed' | 'half' | 'open' | 'pedal' | 'bow' | 'bell';
+export type Zone = 'hit' | 'center' | 'edge' | 'rim' | 'xstick' | 'closed' | 'half' | 'open' | 'pedal' | 'bow' | 'bell';
 
 interface SoundRef {
   set: string;
@@ -32,7 +32,7 @@ interface SoundRef {
 /** Which recorded articulation each piece/zone plays. Tom 2 is Tom 1 tuned down a minor third. */
 const SOUNDS: Record<string, Partial<Record<Zone, SoundRef>>> = {
   kick: { hit: { set: 'kick', art: 'hit' } },
-  snare: { center: { set: 'snare', art: 'center' }, edge: { set: 'snare', art: 'edge' }, rim: { set: 'snare', art: 'rim' } },
+  snare: { center: { set: 'snare', art: 'center' }, edge: { set: 'snare', art: 'edge' }, rim: { set: 'snare', art: 'rim' }, xstick: { set: 'snare', art: 'xstick' } },
   tom1: { center: { set: 'tom', art: 'center', rate: 1.04 }, rim: { set: 'tom', art: 'center', rate: 1.04, gain: 1.15 } },
   tom2: { center: { set: 'tom', art: 'center', rate: 0.86 }, rim: { set: 'tom', art: 'center', rate: 0.86, gain: 1.15 } },
   floor: { center: { set: 'floor', art: 'center' }, rim: { set: 'floor', art: 'rim' } },
@@ -168,6 +168,11 @@ export class AudioEngine {
       }
     }
     return buf;
+  }
+
+  /** Where other instruments (voice, keys, bass…) join the band mix before the limiter. */
+  get output(): AudioNode {
+    return this.master;
   }
 
   get volume(): number {

@@ -1,0 +1,130 @@
+{
+  "source": {
+    "piano": "Upright Piano, Yamaha \u2014 Versilian Community Sample Library (sgossner/VCSL, CC0 1.0)",
+    "bass": "Black And Blue Basses \u2014 Karoryfer Samples, sfzinstruments/karoryfer.black-and-blue-basses (CC0 1.0)",
+    "uke": "Ortega Lizard ukulele \u2014 thgrund/samples-ukulele, tuned to C (CC0 1.0)"
+  },
+  "instruments": {
+    "piano": [
+      {
+        "midi": 36,
+        "file": "keys/piano-36.mp3",
+        "rms": 0.08362
+      },
+      {
+        "midi": 43,
+        "file": "keys/piano-43.mp3",
+        "rms": 0.11642
+      },
+      {
+        "midi": 48,
+        "file": "keys/piano-48.mp3",
+        "rms": 0.16034
+      },
+      {
+        "midi": 55,
+        "file": "keys/piano-55.mp3",
+        "rms": 0.29721
+      },
+      {
+        "midi": 60,
+        "file": "keys/piano-60.mp3",
+        "rms": 0.17739
+      },
+      {
+        "midi": 67,
+        "file": "keys/piano-67.mp3",
+        "rms": 0.11071
+      },
+      {
+        "midi": 72,
+        "file": "keys/piano-72.mp3",
+        "rms": 0.20595
+      },
+      {
+        "midi": 79,
+        "file": "keys/piano-79.mp3",
+        "rms": 0.24074
+      },
+      {
+        "midi": 84,
+        "file": "keys/piano-84.mp3",
+        "rms": 0.12971
+      }
+    ],
+    "bass": [
+      {
+        "midi": 28,
+        "file": "bass/bass-28.mp3",
+        "rms": 0.28999
+      },
+      {
+        "midi": 31,
+        "file": "bass/bass-31.mp3",
+        "rms": 0.29626
+      },
+      {
+        "midi": 34,
+        "file": "bass/bass-34.mp3",
+        "rms": 0.27666
+      },
+      {
+        "midi": 37,
+        "file": "bass/bass-37.mp3",
+        "rms": 0.2688
+      },
+      {
+        "midi": 40,
+        "file": "bass/bass-40.mp3",
+        "rms": 0.25715
+      },
+      {
+        "midi": 43,
+        "file": "bass/bass-43.mp3",
+        "rms": 0.27222
+      },
+      {
+        "midi": 46,
+        "file": "bass/bass-46.mp3",
+        "rms": 0.27806
+      },
+      {
+        "midi": 49,
+        "file": "bass/bass-49.mp3",
+        "rms": 0.27385
+      },
+      {
+        "midi": 52,
+        "file": "bass/bass-52.mp3",
+        "rms": 0.26081
+      },
+      {
+        "midi": 55,
+        "file": "bass/bass-55.mp3",
+        "rms": 0.27907
+      }
+    ],
+    "uke": [
+      {
+        "midi": 60,
+        "file": "uke/uke-60-longhard.mp3",
+        "rms": 0.20155
+      },
+      {
+        "midi": 60,
+        "file": "uke/uke-60-longsoft.mp3",
+        "rms": 0.1873
+      },
+      {
+        "midi": 72,
+        "file": "uke/uke-72-hard.mp3",
+        "rms": 0.22955
+      },
+      {
+        "midi": 72,
+        "file": "uke/uke-72-soft.mp3",
+        "rms": 0.27525
+      }
+    ]
+  }
+}

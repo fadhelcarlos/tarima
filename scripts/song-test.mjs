@@ -13,6 +13,8 @@ page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://localhost:5173/');
 await page.waitForSelector('#start:not([hidden])', { timeout: 180000 });
 await page.tap('#start');
+await page.waitForTimeout(300);
+await page.tap('[data-station="drums"]');
 await page.waitForTimeout(1000);
 await page.evaluate(() => document.getElementById('tip-ok')?.click());
 await page.tap('[data-mode="learn"]');

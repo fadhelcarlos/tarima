@@ -17,6 +17,8 @@ page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 await page.goto(process.env.URL || 'http://localhost:5173/');
 await page.waitForSelector('#start:not([hidden])', { timeout: 180000 });
 await page.tap('#start');
+await page.waitForTimeout(300);
+await page.tap('[data-station="drums"]');
 await page.waitForTimeout(1300);
 await page.evaluate(() => {
   window.__plays = [];

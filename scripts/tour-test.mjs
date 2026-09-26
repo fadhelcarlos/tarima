@@ -14,6 +14,8 @@ page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://localhost:5173/');
 await page.waitForSelector('#start:not([hidden])', { timeout: 180000 });
 await page.tap('#start');
+await page.waitForTimeout(300);
+await page.tap('[data-station="drums"]');
 await page.waitForSelector('#tourcard:not([hidden])', { timeout: 10000 });
 const texts = [];
 for (let i = 0; i < 8; i++) {

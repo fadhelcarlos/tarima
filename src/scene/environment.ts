@@ -6,6 +6,8 @@ const ASSETS = './assets/';
 export interface Stage {
   key: THREE.SpotLight;
   rim: THREE.SpotLight;
+  /** Same boards, darker, for the room floor in front of the stage. */
+  roomFloor: THREE.Material;
 }
 
 /**
@@ -76,17 +78,26 @@ export async function buildStage(scene: THREE.Scene, renderer: THREE.WebGLRender
   scene.environmentRotation.set(0, 0, 0);
   // the room around the kit falls off into darkness, like a stage under a single key light
   scene.background = new THREE.Color(0x0a0807);
-  scene.fog = new THREE.Fog(0x0a0807, 3.2, 8.5);
+  scene.fog = new THREE.Fog(0x0a0807, 9, 26);
   hdr.dispose();
 
-  // hardwood stage boards
+  // hardwood stage deck (the tarima): from the front edge to the back curtain
+  const deckW = 7.4, deckD = 5.3;
+  const tile = (t: THREE.Texture, w: number, d: number) => {
+    const c = t.clone();
+    c.repeat.set(w / 2, d / 2);
+    c.needsUpdate = true;
+    return c;
+  };
   const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(40, 40),
-    new THREE.MeshStandardMaterial({ map: floorMap, normalMap: floorNor, roughnessMap: floorRough, roughness: 1, color: 0x9a8a80, normalScale: new THREE.Vector2(0.8, 0.8), envMapIntensity: 0.45 }),
+    new THREE.PlaneGeometry(deckW, deckD),
+    new THREE.MeshStandardMaterial({ map: tile(floorMap, deckW, deckD), normalMap: tile(floorNor, deckW, deckD), roughnessMap: tile(floorRough, deckW, deckD), roughness: 1, color: 0x9a8a80, normalScale: new THREE.Vector2(0.8, 0.8), envMapIntensity: 0.45 }),
   );
   floor.rotation.x = -Math.PI / 2;
+  floor.position.set(0, 0, 2.4 - deckD / 2);
   floor.receiveShadow = true;
   scene.add(floor);
+  const roomFloor = new THREE.MeshStandardMaterial({ map: floorMap, normalMap: floorNor, roughnessMap: floorRough, roughness: 1, color: 0x4a4440, normalScale: new THREE.Vector2(0.8, 0.8), envMapIntensity: 0.3 });
 
   // drum rug: 2.3 x 1.72 m carpet with a bound edge
   const rugW = 2.3, rugD = 1.72, rugH = 0.009;
@@ -134,5 +145,5 @@ export async function buildStage(scene: THREE.Scene, renderer: THREE.WebGLRender
   rim.target.position.set(0, 0.75, -0.1);
   scene.add(rim, rim.target);
 
-  return { key, rim };
+  return { key, rim, roomFloor };
 }

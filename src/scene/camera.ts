@@ -10,7 +10,7 @@ export const VIEWS: { id: ViewId; name: string }[] = [
   { id: 'side', name: 'Lateral' },
 ];
 
-interface Pose {
+export interface Pose {
   pos: THREE.Vector3;
   target: THREE.Vector3;
   fov: number;
@@ -43,6 +43,9 @@ export class CameraRig {
   readonly shake = new THREE.Vector3();
   orbiting = false;
   private orbitAngle = 0;
+  /** A pose outside the kit presets (e.g. the singer's view), recomputed on resize. */
+  private custom: ((aspect: number) => Pose) | null = null;
+  private linear = false;
 
   constructor(readonly camera: THREE.PerspectiveCamera, kit: Kit) {
     for (const p of kit.pieces.values()) {
@@ -122,7 +125,20 @@ export class CameraRig {
     return { pos: target.clone().addScaledVector(dir, dist), target, fov };
   }
 
+  /** Fly to an arbitrary pose (straight line, not around the kit). */
+  setCustom(fn: (aspect: number) => Pose): void {
+    this.custom = fn;
+    this.orbiting = false;
+    this.from = this.current();
+    this.to = fn(this.aspect());
+    this.linear = true;
+    this.t0 = performance.now();
+  }
+
   setView(view: ViewId, instant = false): void {
+    this.orbiting = false;
+    this.linear = this.custom !== null;
+    this.custom = null;
     this.view = view;
     const next = this.pose(view);
     if (instant) {
@@ -138,7 +154,7 @@ export class CameraRig {
 
   /** Recompute after a resize or HUD change. */
   refit(): void {
-    this.to = this.pose(this.view);
+    this.to = this.custom ? this.custom(this.aspect()) : this.pose(this.view);
     if (!this.from) this.apply(this.to);
   }
 
@@ -172,6 +188,16 @@ export class CameraRig {
     }
     const k = Math.min(1, (now - this.t0) / this.duration);
     const e = ease(k);
+    if (this.linear) {
+      const pos = this.from.pos.clone().lerp(this.to.pos, e);
+      const target = this.from.target.clone().lerp(this.to.target, e);
+      this.apply({ pos, target, fov: THREE.MathUtils.lerp(this.from.fov, this.to.fov, e) });
+      if (k >= 1) {
+        this.from = null;
+        this.linear = false;
+      }
+      return;
+    }
     // move around the kit (spherical) instead of straight through it
     const a = this.from.pos.clone().sub(PIVOT), b = this.to.pos.clone().sub(PIVOT);
     const sa = new THREE.Spherical().setFromVector3(a), sb = new THREE.Spherical().setFromVector3(b);

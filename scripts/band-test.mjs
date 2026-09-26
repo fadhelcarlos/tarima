@@ -1,0 +1,45 @@
+// Records the master output while a karaoke song plays with the backing band, then saves a WAV.
+import { chromium } from 'playwright';
+import { writeFileSync } from 'node:fs';
+const song = process.argv[2] || 'cumple';
+const secs = Number(process.argv[3] || 12);
+const browser = await chromium.launch({ headless: true, args: ['--use-angle=d3d11', '--autoplay-policy=no-user-gesture-required'] });
+const ctx = await browser.newContext({ viewport: { width: 1180, height: 820 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+await ctx.addInitScript(() => localStorage.setItem('baqueta:settings:v1', JSON.stringify({ tourSeen: true, tipSeen: true })));
+const page = await ctx.newPage();
+const errors = [];
+page.on('pageerror', (e) => errors.push(e.message));
+page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(m.text().slice(0, 160)); });
+await page.goto('http://localhost:5173/');
+await page.waitForSelector('#start:not([hidden])', { timeout: 180000 });
+await page.tap('#start');
+await page.waitForTimeout(300);
+await page.tap('[data-station="mic"]');
+await page.waitForTimeout(2500);
+const b64 = await page.evaluate(async ([song, secs]) => {
+  const app = window.app, a = app.audio, ctx = a.ctx;
+  const CAP = `class Cap extends AudioWorkletProcessor { constructor(){ super(); this.on=true; } process(inp){ const c=inp[0]; if(c && c[0]) this.port.postMessage([c[0].slice(), (c[1]||c[0]).slice()]); return true; } } registerProcessor('cap2', Cap);`;
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([CAP], { type: 'application/javascript' })));
+  const cap = new AudioWorkletNode(ctx, 'cap2', { outputChannelCount: [2] });
+  a.output.connect(cap);
+  const sink = ctx.createGain(); sink.gain.value = 0; cap.connect(sink).connect(ctx.destination);
+  const L = [], R = [];
+  cap.port.onmessage = (e) => { L.push(e.data[0]); R.push(e.data[1]); };
+  const { KSONGS } = await import('/src/songs/karaoke.ts');
+  app.mic.startSong(KSONGS.find((s) => s.id === song));
+  await new Promise((r) => setTimeout(r, secs * 1000));
+  cap.port.onmessage = null;
+  const n = L.reduce((x, y) => x + y.length, 0);
+  const out = new Int16Array(n * 2); let o = 0;
+  for (let i = 0; i < L.length; i++) for (let k = 0; k < L[i].length; k++) { out[o++] = Math.max(-1, Math.min(1, L[i][k])) * 32767; out[o++] = Math.max(-1, Math.min(1, R[i][k])) * 32767; }
+  const bytes = new Uint8Array(out.buffer); let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return [btoa(s), ctx.sampleRate];
+}, [song, secs]);
+const [data, rate] = b64;
+const pcm = Buffer.from(data, 'base64');
+const hdr = Buffer.alloc(44);
+hdr.write('RIFF', 0); hdr.writeUInt32LE(36 + pcm.length, 4); hdr.write('WAVE', 8); hdr.write('fmt ', 12);
+hdr.writeUInt32LE(16, 16); hdr.writeUInt16LE(1, 20); hdr.writeUInt16LE(2, 22); hdr.writeUInt32LE(rate, 24); hdr.writeUInt32LE(rate * 4, 28); hdr.writeUInt16LE(4, 32); hdr.writeUInt16LE(16, 34); hdr.write('data', 36); hdr.writeUInt32LE(pcm.length, 40);
+writeFileSync(`.cache/vox/band_${song}.wav`, Buffer.concat([hdr, pcm]));
+console.log('saved', `.cache/vox/band_${song}.wav`, 'errors', errors.filter((e) => !/X4122|X3595/.test(e)));
+await browser.close();
